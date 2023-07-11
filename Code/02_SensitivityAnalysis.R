@@ -63,7 +63,7 @@ stargazer(Landed2014s1,Landed2014s2,Landed2014s3,Landed2014s4,
           covariate.labels = col_lab_Landed, type = "html", out = 'Landed2014table.html', align = TRUE)
 
 
-HDB 2008 Sensitivity
+#HDB 2008 Sensitivity
 HDB_wo_airpoll <- inner_join(HDB_wo_airpoll,dwell_HDB, by = 'Sector_ID', relationship = 'many-to-one') %>%
   mutate( pop  = Total_dwelling * 4) %>%
   mutate (logp = log(pop)) %>%
