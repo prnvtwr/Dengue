@@ -1,4 +1,35 @@
-#Plots
+#Fast SHAP
+data_list <- list(dataset1,dataset2,dataset3,dataset4)
+model_list <- list(fm1,fm2,fm3,fm4)
+shap_list2 <- list()
+for (i in 1:4){
+  X<- subset(data_list[[i]], select = -CurrentYear_count)
+  shap2 <- explain(model_list[[i]], X = X, pred_wrapper = predict, nsim = 100)
+  shap_list2[[i]] <- shap2
+}
+
+S_HDB<- dataset2_1 %>%
+  dplyr::select(-X,-CurrentYear_count)
+
+S_landed <- dataset4_1 %>%
+  dplyr ::select(-CurrentYear_count,-X)
+
+#Final SHAP values
+shap_HDB <- fastshap::explain(fm_2_1, X = S_HDB, pred_wrapper = predict, nsim = 100)
+shap_Landed <- fastshap::explain(fm_4_1, X = S_landed, pred_wrapper = predict, nsim = 100)
+
+#SHAP Imp Plot
+shap_imp2 <- abs(shap_HDB) %>%
+  summarize_all(base::mean) %>%
+  add_column(Type = 'Public Housing')
+shap_imp4 <- abs(shap_Landed) %>%
+  summarize_all(base::mean) %>%
+  add_column(Type = 'Private Housing')
+shap_imp_plot <- bind_rows(shap_imp2,shap_imp4) %>%
+  pivot_longer(!Type, names_to = 'Variable', values_to = 'Mean_Absolute_Shapley_Value')
+
+
+#IRR Plots
 
 label_names <- c('Preceding Year Incidence Rate \n(Cases per 1,000 person-years)','NDVI', 'Vegetation Density', 'Forest Cover (%)',
                  'Grass Cover (%)','Total Vegetation Area (%)', 'Bulding Area (%)','Number of Public Housing Units',
@@ -125,14 +156,14 @@ plot1 <- plotter2(store_rr[[2]], 'Preceding Year Case Count', dataset2$PrevYear_
   coord_cartesian(xlim = c(0,200), ylim = c(-1,5))
 plot2 <- plotter_year(store_rr[[3]])
 plot3 <- plotter2(store_rr[[4]], 'NDVI', dataset2$NDVI_A,shap2$NDVI_A,title = 'A3')
-plot4 <- plotter2(store_rr[[5]], 'Vegetation Density', dataset2$MVege_P,shap2$MVege_P,title = 'A4')
+plot4 <- plotter2(store_rr[[5]], 'Total Vegetation Area (%)', dataset2$MVege_P,shap2$MVege_P,title = 'A4')
 plot5 <- plotter_mult(store_rr[[6]],'Forest Cover (%)',dataset2$Forest_P,shap2$Forest_P, title = 'B1',k=10)+
   geom_polygon(data= data.frame(x=c(0.105,0.11,0.11,0.105),y =c(1.00,0.6139,0.0165,0.0285)), aes(x=x,y=y),
                alpha=0.4,fill='steelblue3',inherit.aes=F)+
   geom_ribbon(data = df[df$x == 0.11 |df$x== 0.14,],aes(x=x,ymax=up_rr,ymin=lo_rr), fill ='steelblue3',alpha=0.4)
 
 plot6 <- plotter2(store_rr[[7]], 'Grass Cover (%)', dataset2$Grass_P, shap2$Grass_P, title = 'B2')
-plot7 <- plotter2(store_rr[[8]],'Total Vegetation Area (%)', dataset2$MVege_P,shap2$MVege_P, title = 'B3')
+plot7 <- plotter2(store_rr[[8]],'Manged Vegetation Cover (%)', dataset2$MVege_P,shap2$MVege_P, title = 'B3')
 plot8 <- plotter2(store_rr[[9]],'Building Area (%)', dataset2$Building_P,shap2$Building_P, title = 'B4')
 plot9 <- plotter2(store_rr[[10]],'Number of Public Housing Units', dataset2$HDB_RU,shap2$HDB_RU, title = 'C1')
 plot10 <- plotter2(store_rr[[11]],'Average Public Housing Building Height (m)', dataset2$A_HDB_H,shap2$A_HDB_H, title = 'C2')
@@ -172,12 +203,12 @@ land_plot1 <- plotter2(store_rr_Landed[[2]], 'Preceding Year Incidence Rate \n (
   coord_cartesian(xlim=c(0,200), ylim = c(-5,35))
 land_plot2 <- plotter_year(store_rr_Landed[[3]])
 land_plot3 <- plotter2(store_rr_Landed[[4]],'NDVI', dataset4_1$NDVI_A,shap_Landed$NDVI_A,title ='A3')
-land_plot4 <- plotter2(store_rr_Landed[[5]],'Vegetation Density', dataset4_1$V_Density,shap_Landed$V_Density,title = 'A4')+
+land_plot4 <- plotter2(store_rr_Landed[[5]],'Total Vegetation Area (%)', dataset4_1$V_Density,shap_Landed$V_Density,title = 'A4')+
   coord_cartesian(ylim=c(-2,40))
 land_plot5 <- plotter2(store_rr_Landed[[6]],'Forest Cover(%)', dataset4_1$Forest_P,shap_Landed$Forest_P, title = 'B1')
 land_plot6 <- plotter2(store_rr_Landed[[7]],'Grass Cover (%)', dataset4_1$Grass_P,shap_Landed$Grass_P,title = 'B2')+
   coord_cartesian(ylim=c(-100,80))
-land_plot7 <- plotter2(store_rr_Landed[[8]],'Total Vegetation Area (%)', dataset4_1$MVege_P,shap_Landed$MVege_P,title = 'B3')
+land_plot7 <- plotter2(store_rr_Landed[[8]],'Managed Vegetation Cover (%)', dataset4_1$MVege_P,shap_Landed$MVege_P,title = 'B3')
 land_plot8 <- plotter2(store_rr_Landed[[9]],'Building Area (%)',dataset4_1$Building_P,shap_Landed$Building_P,title ='B4')
 land_plot9 <- plotter2(store_rr_Landed[[10]],'Number of Condominium Units',dataset4_1$Condo_n,shap_Landed$Condo_n,title = 'C1')
 land_plot10 <- plotter2(store_rr_Landed[[11]],'Number of Landed Housing Units', dataset4_1$Landed_n,shap_Landed$Landed_n,title = 'C2')
