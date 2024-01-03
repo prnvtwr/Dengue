@@ -8,12 +8,7 @@ library(knitr)
 library(stargazer)
 spatial <- st_read('/Users/pranav/Documents/Spatial/Data/Sectorboundary_7Nov2022/Sectorboundary_7Nov2022.shp')
 
-HDB_w_airpoll <- read.csv('/Users/pranav/Documents/Dengue vs Covid/HDB_w_airpoll_new.csv')
-HDB_wo_airpoll <- read.csv('/Users/pranav/Documents/Dengue vs Covid/HDB_wo_airpoll_new.csv')
-Landed_wo_airpoll <- read.csv("~/Documents/Dengue vs Covid/Landed_wo_airpoll_new.csv")
-Landed_w_airpoll <- read.csv('/Users/pranav/Documents/Dengue vs Covid/Landed_w_airpoll_new.csv')
-dwell_HDB<-read.csv('/Users/pranav/Documents/Dengue vs Covid/dwell_HDB.csv')
-dwell_landed <- read.csv('/Users/pranav/Documents/Dengue vs Covid/dwell_landed.csv')
+#Load datasets
 
 #Merge Datasets with Population number, remove Wolbachia spatial units
 HDB_w_airpoll <- inner_join(HDB_w_airpoll,dwell_HDB, by = 'Sector_ID', relationship = 'many-to-one') %>%

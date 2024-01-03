@@ -14,12 +14,6 @@ library(mgcv)
 library(sf)
 
 #Import Datasets
-HDB_w_airpoll <- read.csv('/Users/pranav/Documents/Dengue vs Covid/HDB_w_airpoll_new.csv')
-HDB_wo_airpoll <- read.csv('/Users/pranav/Documents/Dengue vs Covid/HDB_wo_airpoll_new.csv')
-Landed_wo_airpoll <- read.csv("~/Documents/Dengue vs Covid/Landed_wo_airpoll_new.csv")
-Landed_w_airpoll <- read.csv('/Users/pranav/Documents/Dengue vs Covid/Landed_w_airpoll_new.csv')
-dwell_HDB<-read.csv('/Users/pranav/Documents/Dengue vs Covid/dwell_HDB.csv')
-dwell_landed <- read.csv('/Users/pranav/Documents/Dengue vs Covid/dwell_landed.csv')
 
 #Merge Datasets with Population number
 HDB_w_airpoll <- inner_join(HDB_w_airpoll,dwell_HDB, by = 'Sector_ID', relationship = 'many-to-one') %>%
